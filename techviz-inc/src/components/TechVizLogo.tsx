@@ -1,5 +1,5 @@
 import React from 'react';
-import fullLogo from '../assets/images/techviz_full_logo_1786239432451.jpg';
+import fullLogo from '../assets/images/Tech Viz Final transparent .png';
 import tvIconLogo from '../assets/images/Gemini_Generated_Image_g18en3g18en3g18e.png';
 
 interface TechVizLogoProps {
