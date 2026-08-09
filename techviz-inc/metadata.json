@@ -1,0 +1,6 @@
+{
+  "name": "TechViz Inc",
+  "description": "Premium digital product and mobile app development agency providing enterprise software, UI/UX, and AI solutions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
