@@ -1,6 +1,6 @@
 import React from 'react';
 import fullLogo from '../assets/images/Tech Viz Final transparent .png';
-import tvIconLogo from '../assets/images/Gemini_Generated_Image_g18en3g18en3g18e.png';
+import tvIconLogo from '../techviz-inc/src/assets/images/Tech Viz Final transparent .png';
 
 interface TechVizLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
