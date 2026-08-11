@@ -4,7 +4,7 @@ import {
   Send, CheckCircle2, Paperclip, Calendar, Clock, 
   Building, Mail, Phone, User, MessageSquare, Sparkles, Loader2 
 } from 'lucide-react';
-import { submitToGoogleSheets } from '../services/googleSheets';
+import { submitToGoogleSheets } from '../services/googlesheets';
 
 interface ContactFormProps {
   defaultService?: string;
