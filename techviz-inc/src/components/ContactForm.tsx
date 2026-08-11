@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { ContactSubmission } from '../types';
 import { 
   Send, CheckCircle2, Paperclip, Calendar, Clock, 
-  Building, Mail, Phone, User, MessageSquare, Sparkles 
+  Building, Mail, Phone, User, MessageSquare, Sparkles, Loader2 
 } from 'lucide-react';
+import { submitToGoogleSheets } from '../services/googleSheets';
 
 interface ContactFormProps {
   defaultService?: string;
@@ -24,6 +25,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService, onSucc
 
   const [selectedDate, setSelectedDate] = useState<string>('Tomorrow, 10:00 AM EST');
   const [attachedFileName, setAttachedFileName] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,8 +34,25 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService, onSucc
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    await submitToGoogleSheets({
+      formType: 'Contact Inquiry / Strategy Call',
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || '',
+      company: formData.company || '',
+      service: formData.service,
+      budget: formData.budget,
+      message: formData.message || '',
+      preferredContact: formData.preferredContact,
+      selectedConsultationSlot: selectedDate,
+      attachedFileName: attachedFileName || 'None'
+    });
+
+    setIsSubmitting(false);
     setSubmitted(true);
     if (onSuccess) {
       setTimeout(() => {
@@ -230,10 +249,20 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService, onSucc
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full py-3.5 px-6 bg-[#0A2540] hover:bg-[#041627] text-white font-black rounded-xl text-sm shadow-xl transition-all flex items-center justify-center gap-2 transform active:scale-[0.99]"
+        disabled={isSubmitting}
+        className="w-full py-3.5 px-6 bg-[#0A2540] hover:bg-[#041627] disabled:bg-slate-700 text-white font-black rounded-xl text-sm shadow-xl transition-all flex items-center justify-center gap-2 transform active:scale-[0.99] disabled:cursor-not-allowed"
       >
-        <Send className="w-4 h-4 text-amber-400" />
-        <span>Submit Inquiry & Schedule Free Consultation</span>
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
+            <span>Sending Inquiry to Google Sheets...</span>
+          </>
+        ) : (
+          <>
+            <Send className="w-4 h-4 text-amber-400" />
+            <span>Submit Inquiry & Schedule Free Consultation</span>
+          </>
+        )}
       </button>
 
       <p className="text-[11px] text-center text-slate-500">
