@@ -1,4 +1,4 @@
-export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfho2VpsCp_ihMCo7dh_lnlkV781CheZT6CYw6NRxJL66xOycnG3AOEGSJd9oF1gJVLw/exec';
+export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoPrf2zdtu47zcmeAkBIN2Sjh6zg7AHsl4-S5-7rsT/dev';
 
 /**
  * Sends form data directly to the user's Google Sheets Apps Script endpoint.
