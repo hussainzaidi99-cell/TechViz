@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TechVizLogo } from '..assets/images/Logo_transparent.png';
+import { TechVizLogo } from '.techviz-inc/src/assets/images/Logo_transparent.png';
 import { 
   Mail, Phone, MapPin, Shield, Award, CheckCircle2, 
   Linkedin, Twitter, Github, Loader2
