@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { TechVizLogo } from './TechVizLogo';
+import { TechVizLogo } from './Logo transparent.png';
 import { 
   Menu, X, ChevronDown, ArrowRight, 
   Smartphone, Globe, Layers, Palette, Cpu 
