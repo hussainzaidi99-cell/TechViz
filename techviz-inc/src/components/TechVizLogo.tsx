@@ -1,6 +1,6 @@
 import React from 'react';
-import fullLogo from '../assets/images/Logo_transparent.png';
-import tvIconLogo from '../assets/images/Icon .png';
+import fullLogo from '/assets/images/Logo_transparent.png';
+import tvIconLogo from '/assets/images/Icon .png';
 
 interface TechVizLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
