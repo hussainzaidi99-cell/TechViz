@@ -1,30 +1,27 @@
 import React, { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { SERVICES, CASE_STUDIES } from '../data/mockData';
-import { ServiceItem, PageId } from '../types';
 import { 
   ArrowLeft, ArrowRight, CheckCircle2, ShieldCheck, Zap, 
   Smartphone, Tablet, Layers, Globe, Palette, Cpu, Sparkles, 
-  Clock, Check, HelpCircle, Code2, Server, Terminal, Lock, 
-  ChevronRight, FileText, ExternalLink, Award, Layers2
+  Clock, Check, HelpCircle, Code2, Terminal, 
+  ChevronRight, FileText
 } from 'lucide-react';
 
 interface ServiceDetailPageProps {
-  serviceId: string;
-  onSelectService: (id: string) => void;
-  setActivePage: (page: PageId) => void;
+  serviceId?: string;
   openContactModal: (defaultService?: string) => void;
 }
 
 export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
-  serviceId,
-  onSelectService,
-  setActivePage,
+  serviceId: propServiceId,
   openContactModal,
 }) => {
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const { serviceId: urlServiceId } = useParams<{ serviceId?: string }>();
+  const activeServiceId = urlServiceId || propServiceId || 'ios-app-development';
 
   // Find the selected service or default to first
-  const currentService = SERVICES.find((s) => s.id === serviceId) || SERVICES[0];
+  const currentService = SERVICES.find((s) => s.id === activeServiceId) || SERVICES[0];
 
   // Icon mapping helper
   const renderIcon = (iconName: string, className = "w-8 h-8") => {
@@ -244,16 +241,13 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       {/* 1. BREADCRUMBS & TOP NAV */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-600">
-          <button 
-            onClick={() => {
-              setActivePage('services');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+          <Link 
+            to="/services"
             className="hover:text-[#0284C7] transition-colors flex items-center gap-1 font-bold text-slate-700"
           >
             <ArrowLeft className="w-4 h-4 text-[#0284C7]" />
             <span>All Services</span>
-          </button>
+          </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
           <span className="text-[#0284C7] font-bold">{currentService.title}</span>
         </div>
@@ -262,12 +256,9 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         <div className="flex items-center gap-2 overflow-x-auto py-1">
           <span className="text-xs text-slate-700 font-bold hidden sm:inline">Switch Service:</span>
           {SERVICES.map((s) => (
-            <button
+            <Link
               key={s.id}
-              onClick={() => {
-                onSelectService(s.id);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              to={`/services/${s.id}`}
               className={`px-3 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
                 s.id === currentService.id
                   ? 'bg-[#0A2540] text-white shadow-sm'
@@ -275,7 +266,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               }`}
             >
               {s.title.split(' ')[0]}
-            </button>
+            </Link>
           ))}
         </div>
       </div>
@@ -456,16 +447,13 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               <div className="text-xs font-bold text-[#0284C7] uppercase tracking-wider">Proven Track Record</div>
               <h2 className="text-2xl font-extrabold text-[#0A2540]">Featured {currentService.title} Case Studies</h2>
             </div>
-            <button
-              onClick={() => {
-                setActivePage('portfolio');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+            <Link
+              to="/case-studies"
               className="text-xs font-bold text-[#0284C7] hover:underline flex items-center gap-1"
             >
               <span>View All Work</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -490,16 +478,13 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                       </span>
                     ))}
                   </div>
-                  <button
-                    onClick={() => {
-                      setActivePage('portfolio');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
+                  <Link
+                    to="/case-studies"
                     className="text-xs font-bold text-[#0284C7] hover:underline flex items-center gap-1"
                   >
                     <span>Read Case Study</span>
                     <ArrowRight className="w-3 h-3" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -543,7 +528,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
 
         <button
           onClick={() => openContactModal(currentService.id)}
-          className="px-8 py-3.5 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-black rounded-2xl text-xs sm:text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95"
+          className="px-8 py-3.5 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-black rounded-2xl text-xs sm:text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95 cursor-pointer"
         >
           <span>Schedule {currentService.title.split(' ')[0]} Consultation</span>
           <ArrowRight className="w-4 h-4 text-slate-950" />

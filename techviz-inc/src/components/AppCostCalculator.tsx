@@ -3,8 +3,9 @@ import { EstimatorState } from '../types';
 import { 
   Calculator, CheckCircle2, ChevronRight, ChevronLeft, Sparkles, 
   Smartphone, Globe, Layers, ShieldCheck, Clock, Users, ArrowRight,
-  DollarSign, Zap, RefreshCw, Send
+  DollarSign, Zap, RefreshCw, Send, Loader2
 } from 'lucide-react';
+import { submitToGoogleSheets } from '../services/googleSheets';
 
 interface AppCostCalculatorProps {
   onCompleteQuote: (summary: string) => void;
@@ -20,6 +21,7 @@ export const AppCostCalculator: React.FC<AppCostCalculatorProps> = ({ onComplete
     timeline: 'standard'
   });
 
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [leadName, setLeadName] = useState('');
   const [leadEmail, setLeadEmail] = useState('');
@@ -92,8 +94,27 @@ export const AppCostCalculator: React.FC<AppCostCalculatorProps> = ({ onComplete
     }
   };
 
-  const handleSubmitLead = (e: React.FormEvent) => {
+  const handleSubmitLead = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmittingLead(true);
+
+    const timelineEstimate = state.complexity === 'mvp' ? '6 - 8 Weeks' : state.complexity === 'enterprise' ? '16 - 24 Weeks' : '10 - 14 Weeks';
+
+    await submitToGoogleSheets({
+      formType: 'App Cost Calculator Estimate Request',
+      name: leadName,
+      email: leadEmail,
+      phone: leadPhone || '',
+      platform: state.platform,
+      complexity: state.complexity,
+      designLevel: state.designLevel,
+      timeline: state.timeline,
+      featuresSelected: state.features.join(', '),
+      estimatedPriceRange: `$${priceRange.min.toLocaleString()} - $${priceRange.max.toLocaleString()}`,
+      estimatedTimelineWeeks: timelineEstimate
+    });
+
+    setIsSubmittingLead(false);
     setSubmitted(true);
     const summary = `App Estimate Request: ${state.platform.toUpperCase()} (${state.complexity.toUpperCase()}), Budget Range $${priceRange.min.toLocaleString()} - $${priceRange.max.toLocaleString()}. Contact: ${leadName} (${leadEmail}, ${leadPhone})`;
     onCompleteQuote(summary);
@@ -472,10 +493,20 @@ export const AppCostCalculator: React.FC<AppCostCalculatorProps> = ({ onComplete
 
                     <button
                       type="submit"
-                      className="w-full py-3 px-4 bg-gradient-to-r from-cyan-400 to-sky-400 text-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
+                      disabled={isSubmittingLead}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-cyan-400 to-sky-400 disabled:from-slate-700 disabled:to-slate-700 text-black disabled:text-slate-300 font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all disabled:cursor-not-allowed"
                     >
-                      <Send className="w-4 h-4 text-black" />
-                      <span>Generate Detailed Proposal & Book Strategy Call</span>
+                      {isSubmittingLead ? (
+                        <>
+                          <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+                          <span>Sending to Google Sheets...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4 text-black" />
+                          <span>Generate Detailed Proposal & Book Strategy Call</span>
+                        </>
+                      )}
                     </button>
                   </form>
                 )}

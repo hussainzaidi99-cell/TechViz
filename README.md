@@ -1,2 +1,0 @@
-# TechViz
-Website

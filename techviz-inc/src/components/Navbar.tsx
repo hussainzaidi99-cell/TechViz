@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { PageId } from '../types';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { TechVizLogo } from './TechVizLogo';
 import { 
-  Menu, X, ChevronDown, Mail, ArrowRight, 
-  Smartphone, Globe, Layers, Palette, Cpu, Sparkles 
+  Menu, X, ChevronDown, ArrowRight, 
+  Smartphone, Globe, Layers, Palette, Cpu 
 } from 'lucide-react';
 
 interface NavbarProps {
-  activePage: PageId;
-  setActivePage: (page: PageId) => void;
   openContactModal: (defaultService?: string) => void;
-  onSelectService?: (serviceId: string) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  activePage,
-  setActivePage,
-  openContactModal,
-  onSelectService
-}) => {
+export const Navbar: React.FC<NavbarProps> = ({ openContactModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,31 +25,26 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks: { id: PageId; label: string; badge?: string }[] = [
-    { id: 'home', label: 'Home' },
-    { id: 'services', label: 'Services' },
-    { id: 'webdev', label: 'Web Dev' },
-    { id: 'portfolio', label: 'Case Studies' },
-    { id: 'about', label: 'About' },
-    { id: 'contact', label: 'Contact' }
-  ];
-
-  const handleNavClick = (id: PageId) => {
-    setActivePage(id);
+  // Close menus on route change
+  useEffect(() => {
     setMobileMenuOpen(false);
     setServicesDropdownOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [location.pathname]);
+
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/services', label: 'Services', isDropdown: true },
+    { path: '/web-development', label: 'Web Dev', badge: '$600+' },
+    { path: '/case-studies', label: 'Case Studies' },
+    { path: '/calculator', label: 'Estimator' },
+    { path: '/about', label: 'About' },
+    { path: '/contact', label: 'Contact' }
+  ];
 
   const handleSelectServiceItem = (serviceId: string) => {
     setServicesDropdownOpen(false);
     setMobileMenuOpen(false);
-    if (onSelectService) {
-      onSelectService(serviceId);
-    } else {
-      setActivePage('services');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(`/services/${serviceId}`);
   };
 
   return (
@@ -68,42 +57,44 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
-        <button 
-          onClick={() => handleNavClick('home')} 
+        <Link 
+          to="/" 
           className="focus:outline-none focus:ring-2 focus:ring-[#0284C7] rounded-lg p-0.5 transition-transform hover:opacity-95 shrink-0"
           aria-label="TechViz Inc Home"
         >
           <TechVizLogo size="md" lightMode={false} />
-        </button>
+        </Link>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5">
           {navLinks.map((link) => {
-            if (link.id === 'services') {
+            if (link.isDropdown) {
+              const isServicesActive = location.pathname.startsWith('/services');
               return (
                 <div 
-                  key={link.id} 
+                  key={link.path} 
                   className="relative"
                   onMouseEnter={() => setServicesDropdownOpen(true)}
                   onMouseLeave={() => setServicesDropdownOpen(false)}
                 >
-                  <button
-                    onClick={() => handleNavClick('services')}
+                  <NavLink
+                    to="/services"
                     className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-1 ${
-                      activePage === 'services'
+                      isServicesActive
                         ? 'text-[#0284C7] bg-sky-50 font-bold'
                         : 'text-slate-700 hover:text-[#0A2540] hover:bg-slate-100/80'
                     }`}
                   >
-                    Services
+                    <span>Services</span>
                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${servicesDropdownOpen ? 'rotate-180 text-[#0284C7]' : ''}`} />
-                  </button>
+                  </NavLink>
 
                   {/* Services Dropdown */}
                   {servicesDropdownOpen && (
                     <div className="absolute top-full left-0 mt-1 w-[480px] bg-white rounded-2xl shadow-xl border border-slate-200 p-3 grid grid-cols-2 gap-2 transition-all animate-in fade-in duration-150">
-                      <button
-                        onClick={() => handleNavClick('webdev')}
+                      <Link
+                        to="/web-development"
+                        onClick={() => setServicesDropdownOpen(false)}
                         className="p-2.5 rounded-xl hover:bg-slate-50 text-left transition-colors flex items-start gap-2.5 group border border-transparent hover:border-slate-200 col-span-2 bg-sky-50/60"
                       >
                         <div className="p-2 rounded-lg bg-[#0284C7] text-white">
@@ -116,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           </div>
                           <div className="text-[11px] text-slate-500 mt-0.5">Custom React & Next.js Websites</div>
                         </div>
-                      </button>
+                      </Link>
 
                       <button
                         onClick={() => handleSelectServiceItem('ios-app-development')}
@@ -176,14 +167,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             }
 
             return (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-1.5 ${
-                  activePage === link.id
-                    ? 'text-[#0284C7] bg-sky-50 font-bold'
-                    : 'text-slate-700 hover:text-[#0A2540] hover:bg-slate-100/80'
-                }`}
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className={({ isActive }) =>
+                  `px-3 py-2 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-1.5 ${
+                    isActive
+                      ? 'text-[#0284C7] bg-sky-50 font-bold'
+                      : 'text-slate-700 hover:text-[#0A2540] hover:bg-slate-100/80'
+                  }`
+                }
               >
                 <span>{link.label}</span>
                 {link.badge && (
@@ -191,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {link.badge}
                   </span>
                 )}
-              </button>
+              </NavLink>
             );
           })}
         </nav>
@@ -224,14 +217,17 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-2 shadow-xl animate-in slide-in-from-top duration-150">
           <div className="grid grid-cols-1 gap-1">
             {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between min-h-[44px] ${
-                  activePage === link.id
-                    ? 'bg-sky-50 text-[#0284C7] font-bold'
-                    : 'text-slate-700 hover:bg-slate-100'
-                }`}
+              <NavLink
+                key={link.path}
+                to={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between min-h-[44px] ${
+                    isActive
+                      ? 'bg-sky-50 text-[#0284C7] font-bold'
+                      : 'text-slate-700 hover:bg-slate-100'
+                  }`
+                }
               >
                 <span>{link.label}</span>
                 {link.badge && (
@@ -239,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {link.badge}
                   </span>
                 )}
-              </button>
+              </NavLink>
             ))}
           </div>
 

@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
-import { PageId } from './types';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ContactModal } from './components/ContactModal';
+import { ScrollToTop } from './components/ScrollToTop';
+
 import { HomePage } from './pages/HomePage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { WebDevPage } from './pages/WebDevPage';
 import { PortfolioPage } from './pages/PortfolioPage';
+import { CalculatorPage } from './pages/CalculatorPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
-import { AppCostCalculator } from './components/AppCostCalculator';
+import { LegalPage } from './pages/LegalPage';
 
 export default function App() {
-  const [activePage, setActivePage] = useState<PageId>('home');
-  const [selectedServiceId, setSelectedServiceId] = useState<string>('ios-app-development');
   const [isContactModalOpen, setIsContactModalOpen] = useState<boolean>(false);
   const [contactModalDefaultService, setContactModalDefaultService] = useState<string | undefined>(undefined);
-
-  const handleSelectService = (serviceId: string) => {
-    setSelectedServiceId(serviceId);
-    setActivePage('service-detail');
-  };
 
   const openContactModal = (defaultService?: string) => {
     setContactModalDefaultService(defaultService);
@@ -34,82 +30,55 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 font-sans selection:bg-[#0284C7] selection:text-white">
-      {/* Top Navbar */}
-      <Navbar 
-        activePage={activePage} 
-        setActivePage={setActivePage} 
-        openContactModal={openContactModal} 
-        onSelectService={handleSelectService}
-      />
+      {/* Scroll restoration helper */}
+      <ScrollToTop />
 
-      {/* Main Active Page Content */}
+      {/* Global Top Navbar */}
+      <Navbar openContactModal={openContactModal} />
+
+      {/* Primary Routes Viewport */}
       <main className="flex-1">
-        {activePage === 'home' && (
-          <HomePage 
-            setActivePage={setActivePage} 
-            openContactModal={openContactModal} 
-            onSelectService={handleSelectService}
-          />
-        )}
+        <Routes>
+          {/* Home Route */}
+          <Route path="/" element={<HomePage openContactModal={openContactModal} />} />
 
-        {activePage === 'services' && (
-          <ServicesPage 
-            openContactModal={openContactModal} 
-            onSelectService={handleSelectService}
-          />
-        )}
+          {/* Services Routes */}
+          <Route path="/services" element={<ServicesPage openContactModal={openContactModal} />} />
+          <Route path="/services/:serviceId" element={<ServiceDetailPage openContactModal={openContactModal} />} />
+          <Route path="/service-detail" element={<ServiceDetailPage openContactModal={openContactModal} />} />
 
-        {activePage === 'service-detail' && (
-          <ServiceDetailPage 
-            serviceId={selectedServiceId}
-            onSelectService={handleSelectService}
-            setActivePage={setActivePage}
-            openContactModal={openContactModal}
-          />
-        )}
+          {/* Web Development & Pricing Routes */}
+          <Route path="/web-development" element={<WebDevPage openContactModal={openContactModal} />} />
+          <Route path="/webdev" element={<WebDevPage openContactModal={openContactModal} />} />
+          <Route path="/pricing" element={<WebDevPage openContactModal={openContactModal} />} />
 
-        {activePage === 'webdev' && (
-          <WebDevPage 
-            openContactModal={openContactModal}
-            setActivePage={setActivePage}
-          />
-        )}
+          {/* Case Studies & Portfolio Routes */}
+          <Route path="/case-studies" element={<PortfolioPage openContactModal={openContactModal} />} />
+          <Route path="/portfolio" element={<PortfolioPage openContactModal={openContactModal} />} />
 
-        {activePage === 'portfolio' && (
-          <PortfolioPage 
-            openContactModal={openContactModal} 
-          />
-        )}
+          {/* Interactive Estimator Route */}
+          <Route path="/calculator" element={<CalculatorPage openContactModal={openContactModal} />} />
 
-        {activePage === 'calculator' && (
-          <div className="pt-28 pb-16 px-4">
-            <AppCostCalculator 
-              onCompleteQuote={(summary) => {
-                console.log(summary);
-              }} 
-            />
-          </div>
-        )}
+          {/* Company & Contact Routes */}
+          <Route path="/about" element={<AboutPage openContactModal={openContactModal} />} />
+          <Route path="/contact" element={<ContactPage />} />
 
-        {activePage === 'about' && (
-          <AboutPage 
-            openContactModal={openContactModal} 
-          />
-        )}
+          {/* Paddle / Legal Compliance Routes */}
+          <Route path="/terms" element={<LegalPage type="terms" />} />
+          <Route path="/terms-of-service" element={<LegalPage type="terms" />} />
+          <Route path="/privacy" element={<LegalPage type="privacy" />} />
+          <Route path="/privacy-policy" element={<LegalPage type="privacy" />} />
+          <Route path="/refund-policy" element={<LegalPage type="refund" />} />
 
-        {activePage === 'contact' && (
-          <ContactPage />
-        )}
+          {/* Catch-all Wildcard Route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
-      {/* Universal Footer */}
-      <Footer 
-        setActivePage={setActivePage} 
-        openContactModal={openContactModal} 
-        onSelectService={handleSelectService}
-      />
+      {/* Global Footer */}
+      <Footer openContactModal={openContactModal} />
 
-      {/* Quick Contact / Request Quote Modal */}
+      {/* Reusable Lead Capture Modal */}
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={closeContactModal} 

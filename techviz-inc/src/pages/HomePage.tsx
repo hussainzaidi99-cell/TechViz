@@ -1,20 +1,20 @@
 import React from 'react';
-import { PageId } from '../types';
+import { Link, useNavigate } from 'react-router-dom';
 import { SERVICES, CASE_STUDIES, TESTIMONIALS, AGENCY_FAQS } from '../data/mockData';
 import { AppSimulator } from '../components/AppSimulator';
 import { 
-  Smartphone, Globe, Layers, Palette, Cpu, Sparkles, ArrowRight, 
-  CheckCircle2, Shield, Award, Users, Star, ChevronRight, Zap, 
-  Calculator, Check, ArrowUpRight, MessageSquare, HelpCircle 
+  Smartphone, Globe, Layers, Cpu, Sparkles, ArrowRight, 
+  CheckCircle2, Star, ChevronRight, ArrowUpRight, HelpCircle,
+  ShieldCheck, Server, Database, Code2, Lock, Cloud, Terminal, Award
 } from 'lucide-react';
 
 interface HomePageProps {
-  setActivePage: (page: PageId) => void;
   openContactModal: (defaultService?: string) => void;
-  onSelectService?: (serviceId: string) => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactModal, onSelectService }) => {
+export const HomePage: React.FC<HomePageProps> = ({ openContactModal }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-20 pb-16">
       
@@ -48,22 +48,19 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={() => openContactModal()}
-                className="w-full sm:w-auto px-8 py-4 bg-[#0A2540] hover:bg-[#041627] text-white font-extrabold rounded-2xl text-base shadow-xl transition-all flex items-center justify-center gap-2.5 transform hover:-translate-y-0.5 active:scale-95"
+                className="w-full sm:w-auto px-8 py-4 bg-[#0A2540] hover:bg-[#041627] text-white font-extrabold rounded-2xl text-base shadow-xl transition-all flex items-center justify-center gap-2.5 transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
               >
                 <span>Schedule Free Strategy Call</span>
                 <ArrowRight className="w-5 h-5 text-amber-400" />
               </button>
 
-              <button
-                onClick={() => {
-                  setActivePage('webdev');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+              <Link
+                to="/web-development"
                 className="w-full sm:w-auto px-7 py-4 bg-white hover:bg-slate-50 text-[#0A2540] font-bold rounded-2xl text-base border border-slate-200 shadow-sm transition-all flex items-center justify-center gap-2.5 hover:border-sky-300"
               >
                 <Globe className="w-5 h-5 text-[#0284C7]" />
                 <span>Web Dev Packages</span>
-              </button>
+              </Link>
             </div>
 
             {/* Key Metric Highlights */}
@@ -110,32 +107,192 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0 z-10">
-            <button
-              onClick={() => {
-                setActivePage('webdev');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+            <Link
+              to="/web-development"
               className="px-6 py-3.5 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 transform active:scale-95"
             >
               <span>Explore Web Packages ($600 - $1,500)</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-md">
-          <div className="text-center text-xs font-bold text-[#0284C7] uppercase tracking-widest mb-4">
-            Battle-Tested Tech Stack & Frameworks
+
+      {/* 3. CLIENT TRUST & TECHNOLOGY STANDARDS */}
+      <section id="client-trust" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-8 sm:p-10 space-y-8">
+          
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <div className="text-xs font-bold text-[#0284C7] uppercase tracking-widest">
+              Enterprise Trust & Technology Ecosystem
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0A2540] tracking-tight">
+              Engineered with World-Class Technologies & Industry Standards
+            </h2>
+            <p className="text-slate-500 text-xs sm:text-sm">
+              We build on battle-tested architectures adhering to strict enterprise security, cloud reliability, and modern development standards.
+            </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-slate-700 font-bold text-sm">
-            <span className="flex items-center gap-2 hover:text-[#0284C7] transition-colors"><Smartphone className="w-4 h-4 text-[#0284C7]" /> Apple Swift 6</span>
-            <span className="flex items-center gap-2 hover:text-purple-600 transition-colors"><Smartphone className="w-4 h-4 text-purple-600" /> Android Kotlin</span>
-            <span className="flex items-center gap-2 hover:text-[#0284C7] transition-colors"><Layers className="w-4 h-4 text-sky-500" /> React Native</span>
-            <span className="flex items-center gap-2 hover:text-blue-600 transition-colors"><Layers className="w-4 h-4 text-blue-600" /> Flutter</span>
-            <span className="flex items-center gap-2 hover:text-emerald-600 transition-colors"><Globe className="w-4 h-4 text-emerald-600" /> Next.js & Node</span>
-            <span className="flex items-center gap-2 hover:text-amber-600 transition-colors"><Cpu className="w-4 h-4 text-amber-500" /> Gemini AI API</span>
+
+          {/* Technology Logos / Stacks (Grayscale to Color on Hover) */}
+          <div className="space-y-4">
+            <div className="text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Core Technologies & Frameworks
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+              
+              {/* React / Next.js */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-sky-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-sky-100 rounded-xl transition-colors">
+                  <Layers className="w-5 h-5 text-slate-600 group-hover:text-[#0284C7] transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">React & Next.js</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Frontend UI</span>
+              </div>
+
+              {/* Node.js */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-emerald-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-emerald-100 rounded-xl transition-colors">
+                  <Server className="w-5 h-5 text-slate-600 group-hover:text-emerald-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Node.js & TS</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Backend APIs</span>
+              </div>
+
+              {/* Amazon Web Services */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-amber-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-amber-100 rounded-xl transition-colors">
+                  <Cloud className="w-5 h-5 text-slate-600 group-hover:text-amber-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Amazon Web Services</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Cloud Infrastructure</span>
+              </div>
+
+              {/* Google Cloud */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-blue-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-blue-100 rounded-xl transition-colors">
+                  <Cpu className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Google Cloud & AI</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Cloud & Gemini</span>
+              </div>
+
+              {/* Apple iOS Swift */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-slate-400 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-slate-800 rounded-xl transition-colors">
+                  <Smartphone className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Apple Swift 6</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Native iOS</span>
+              </div>
+
+              {/* Android Kotlin */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-purple-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-purple-100 rounded-xl transition-colors">
+                  <Terminal className="w-5 h-5 text-slate-600 group-hover:text-purple-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Android Kotlin</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Native Android</span>
+              </div>
+
+              {/* PostgreSQL */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-sky-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-sky-100 rounded-xl transition-colors">
+                  <Database className="w-5 h-5 text-slate-600 group-hover:text-[#0284C7] transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">PostgreSQL & Redis</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">High-IOPS Storage</span>
+              </div>
+
+              {/* Docker & K8s */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-blue-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-blue-100 rounded-xl transition-colors">
+                  <Code2 className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Docker & K8s</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Containers</span>
+              </div>
+
+              {/* Flutter */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-cyan-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-cyan-100 rounded-xl transition-colors">
+                  <Smartphone className="w-5 h-5 text-slate-600 group-hover:text-cyan-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Flutter & Dart</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Multi-Platform</span>
+              </div>
+
+              {/* GraphQL & REST */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-pink-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-pink-100 rounded-xl transition-colors">
+                  <Globe className="w-5 h-5 text-slate-600 group-hover:text-pink-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">GraphQL & REST</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">API Architecture</span>
+              </div>
+
+              {/* Stripe Payments */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-indigo-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-indigo-100 rounded-xl transition-colors">
+                  <Lock className="w-5 h-5 text-slate-600 group-hover:text-indigo-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">Stripe & Paddle</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">Global Payments</span>
+              </div>
+
+              {/* AI & Vector DBs */}
+              <div className="group p-4 bg-slate-50 hover:bg-white rounded-2xl border border-slate-200/70 hover:border-amber-300 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 cursor-default">
+                <div className="p-2 bg-slate-200/70 group-hover:bg-amber-100 rounded-xl transition-colors">
+                  <Sparkles className="w-5 h-5 text-slate-600 group-hover:text-amber-600 transition-colors" />
+                </div>
+                <div className="font-bold text-xs text-slate-700 group-hover:text-[#0A2540] transition-colors">GenAI & Pinecone</div>
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-500">LLM Workflows</span>
+              </div>
+
+            </div>
           </div>
+
+          {/* Industry Standards & Compliance Badges */}
+          <div className="pt-6 border-t border-slate-100">
+            <div className="text-center text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-4">
+              Industry Standards & Security Compliance
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">SOC 2 Type II</span>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <Award className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">ISO 27001 Aligned</span>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <Lock className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">HIPAA Ready</span>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">PCI-DSS Level 1</span>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <Globe className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">GDPR & CCPA</span>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+                <Cloud className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold">99.99% Cloud SLA</span>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -187,20 +344,13 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
                   <span>{srv.platforms.slice(0, 2).join(' • ')}</span>
                 </div>
 
-                <button
-                  onClick={() => {
-                    if (onSelectService) {
-                      onSelectService(srv.id);
-                    } else {
-                      setActivePage('services');
-                    }
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                <Link
+                  to={`/services/${srv.id}`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-[#0284C7] group-hover:text-amber-600 transition-colors"
                 >
                   <span>Explore Details</span>
                   <ChevronRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -257,16 +407,13 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
             </h2>
           </div>
 
-          <button
-            onClick={() => {
-              setActivePage('portfolio');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+          <Link
+            to="/case-studies"
             className="inline-flex items-center gap-2 text-sm font-bold text-[#0284C7] hover:text-[#0A2540] transition-colors"
           >
             <span>View All Case Studies</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -304,16 +451,13 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
               </div>
 
               <div className="p-6 pt-0">
-                <button
-                  onClick={() => {
-                    setActivePage('portfolio');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                <Link
+                  to="/case-studies"
                   className="w-full py-2.5 bg-slate-100 hover:bg-[#0A2540] hover:text-white text-slate-800 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   <span>Explore Case Study</span>
                   <ArrowUpRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -439,7 +583,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setActivePage, openContactMo
 
           <button
             onClick={() => openContactModal()}
-            className="px-8 py-4 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95"
+            className="px-8 py-4 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95 cursor-pointer"
           >
             <span>Start Your Project</span>
             <ArrowRight className="w-4 h-4 text-slate-950" />

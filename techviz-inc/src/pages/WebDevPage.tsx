@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { WEB_PACKAGES } from '../data/mockData';
 import { WebPackage } from '../types';
 import { 
@@ -8,10 +9,10 @@ import {
 
 interface WebDevPageProps {
   openContactModal: (serviceOrPackage?: string) => void;
-  setActivePage: (page: any) => void;
+  setActivePage?: (page: any) => void;
 }
 
-export const WebDevPage: React.FC<WebDevPageProps> = ({ openContactModal, setActivePage }) => {
+export const WebDevPage: React.FC<WebDevPageProps> = ({ openContactModal }) => {
   const [selectedBillingTab, setSelectedBillingTab] = useState<'fixed' | 'monthly'>('fixed');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
@@ -181,7 +182,7 @@ export const WebDevPage: React.FC<WebDevPageProps> = ({ openContactModal, setAct
               <div className="pt-6 mt-6 border-t border-slate-100">
                 <button
                   onClick={() => handleSelectPackage(pkg)}
-                  className={`w-full py-3.5 px-4 rounded-2xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md ${
+                  className={`w-full py-3.5 px-4 rounded-2xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer ${
                     pkg.popular
                       ? 'bg-[#0A2540] hover:bg-[#041627] text-white shadow-xl hover:shadow-2xl'
                       : 'bg-slate-900 hover:bg-black text-white hover:border-sky-300'
@@ -360,7 +361,7 @@ export const WebDevPage: React.FC<WebDevPageProps> = ({ openContactModal, setAct
 
           <button
             onClick={() => openContactModal('Custom Web Development Inquiry')}
-            className="px-8 py-4 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95"
+            className="px-8 py-4 bg-gradient-to-r from-sky-400 to-amber-400 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl hover:opacity-90 transition-all shrink-0 flex items-center gap-2 transform active:scale-95 cursor-pointer"
           >
             <span>Request Free Web Proposal</span>
             <ArrowRight className="w-4 h-4 text-slate-950" />

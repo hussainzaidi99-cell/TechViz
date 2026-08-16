@@ -1,32 +1,33 @@
 import React, { useState } from 'react';
-import { PageId } from '../types';
+import { Link } from 'react-router-dom';
 import { TechVizLogo } from './TechVizLogo';
 import { 
-  Mail, Phone, MapPin, ArrowRight, Shield, Award, CheckCircle2, 
-  Linkedin, Twitter, Github, Globe, Heart 
+  Mail, Phone, MapPin, Shield, Award, CheckCircle2, 
+  Linkedin, Twitter, Github, Loader2
 } from 'lucide-react';
+import { submitToGoogleSheets } from '../services/googleSheets';
 
 interface FooterProps {
-  setActivePage: (page: PageId) => void;
   openContactModal: (defaultService?: string) => void;
-  onSelectService?: (serviceId: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal, onSelectService }) => {
+export const Footer: React.FC<FooterProps> = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newsletterEmail) {
+      setIsSubmitting(true);
+      await submitToGoogleSheets({
+        formType: 'Newsletter Subscription',
+        email: newsletterEmail
+      });
+      setIsSubmitting(false);
       setSubscribed(true);
       setNewsletterEmail('');
     }
-  };
-
-  const handleNav = (page: PageId) => {
-    setActivePage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -40,12 +41,12 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal,
           
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-6">
-            <button 
-              onClick={() => handleNav('home')}
-              className="text-left focus:outline-none"
+            <Link 
+              to="/"
+              className="text-left inline-block focus:outline-none"
             >
               <TechVizLogo size="lg" lightMode={true} />
-            </button>
+            </Link>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
               TechViz Inc is a premier digital product and custom mobile app development agency. We partner with ambitious startups and global enterprises to build high-impact iOS, Android, and Web applications.
@@ -85,9 +86,17 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal,
                   />
                   <button
                     type="submit"
-                    className="bg-gradient-to-r from-cyan-400 to-sky-400 text-black font-black px-4 py-2.5 rounded-xl text-xs hover:opacity-90 transition-opacity shrink-0"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-cyan-400 to-sky-400 text-black font-black px-4 py-2.5 rounded-xl text-xs hover:opacity-90 transition-opacity shrink-0 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    Subscribe
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 text-black animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <span>Subscribe</span>
+                    )}
                   </button>
                 </form>
               )}
@@ -101,41 +110,41 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal,
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <button onClick={() => handleNav('home')} className="hover:text-cyan-300 transition-colors">
+                <Link to="/" className="hover:text-cyan-300 transition-colors">
                   Home
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('webdev')} className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 font-bold text-sky-300">
+                <Link to="/web-development" className="hover:text-cyan-300 transition-colors flex items-center gap-1.5 font-bold text-sky-300">
                   <span>Web Dev Packages</span>
-                  <span className="bg-amber-400 text-black text-[9px] font-extrabold px-1.5 rounded">Packages</span>
-                </button>
+                  <span className="bg-amber-400 text-black text-[9px] font-extrabold px-1.5 rounded">$600+</span>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('services')} className="hover:text-cyan-300 transition-colors">
+                <Link to="/services" className="hover:text-cyan-300 transition-colors">
                   Our Services
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('portfolio')} className="hover:text-cyan-300 transition-colors">
+                <Link to="/case-studies" className="hover:text-cyan-300 transition-colors">
                   Case Studies & Work
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('calculator')} className="hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+                <Link to="/calculator" className="hover:text-cyan-300 transition-colors flex items-center gap-1.5">
                   <span>App Cost Estimator</span>
                   <span className="bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded">Hot</span>
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('about')} className="hover:text-cyan-300 transition-colors">
+                <Link to="/about" className="hover:text-cyan-300 transition-colors">
                   About TechViz
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('contact')} className="hover:text-cyan-300 transition-colors">
+                <Link to="/contact" className="hover:text-cyan-300 transition-colors">
                   Contact Us
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -147,64 +156,34 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal,
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('ios-app-development'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/ios-app-development" className="hover:text-cyan-300 transition-colors block">
                   iOS App Development
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('android-app-development'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/android-app-development" className="hover:text-cyan-300 transition-colors block">
                   Android App Development
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('cross-platform-development'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/cross-platform-development" className="hover:text-cyan-300 transition-colors block">
                   Cross-Platform Apps
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('web-saas-development'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/web-saas-development" className="hover:text-cyan-300 transition-colors block">
                   Web & SaaS Engineering
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('ui-ux-product-design'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/ui-ux-product-design" className="hover:text-cyan-300 transition-colors block">
                   UI/UX Product Design
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => {
-                    if (onSelectService) { onSelectService('ai-cloud-integration'); } else { handleNav('services'); }
-                  }} 
-                  className="hover:text-cyan-300 transition-colors text-left"
-                >
+                <Link to="/services/ai-cloud-integration" className="hover:text-cyan-300 transition-colors block">
                   Enterprise AI Solutions
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -253,15 +232,15 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, openContactModal,
           </div>
 
           <div className="flex items-center space-x-6">
-            <button onClick={() => handleNav('about')} className="hover:text-slate-300 transition-colors">
+            <Link to="/privacy" className="hover:text-slate-300 transition-colors">
               Privacy Policy
-            </button>
-            <button onClick={() => handleNav('about')} className="hover:text-slate-300 transition-colors">
+            </Link>
+            <Link to="/terms" className="hover:text-slate-300 transition-colors">
               Terms of Service
-            </button>
-            <button onClick={() => handleNav('about')} className="hover:text-slate-300 transition-colors">
-              Security & SLA
-            </button>
+            </Link>
+            <Link to="/refund-policy" className="hover:text-slate-300 transition-colors">
+              Refund Policy
+            </Link>
           </div>
 
           <div className="flex items-center space-x-3">

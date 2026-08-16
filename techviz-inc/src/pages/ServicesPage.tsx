@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { PageId } from '../types';
+import { Link, useNavigate } from 'react-router-dom';
 import { SERVICES } from '../data/mockData';
 import { 
-  Smartphone, Tablet, Layers, Globe, Palette, Cpu, CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Award, Layers2, Sparkles, ChevronRight 
+  Smartphone, CheckCircle2, ArrowRight, ShieldCheck, Zap, Sparkles 
 } from 'lucide-react';
 
 interface ServicesPageProps {
   openContactModal: (defaultService?: string) => void;
-  onSelectService?: (serviceId: string) => void;
 }
 
-export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal, onSelectService }) => {
+export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const navigate = useNavigate();
 
   const categories = [
     { id: 'all', label: 'All Services' },
@@ -25,13 +24,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal, on
   const filteredServices = selectedCategory === 'all' 
     ? SERVICES 
     : SERVICES.filter(s => s.category === selectedCategory);
-
-  const handleServiceClick = (id: string) => {
-    if (onSelectService) {
-      onSelectService(id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   return (
     <div className="pt-28 pb-16 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,7 +50,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal, on
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                 selectedCategory === cat.id
                   ? 'bg-amber-400 text-slate-950 shadow-lg scale-105'
                   : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm'
@@ -81,12 +73,15 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal, on
             {/* Left Info Column */}
             <div className="lg:col-span-7 space-y-6">
               <div className="flex items-center gap-3">
-                <div className="p-3.5 bg-sky-50 text-[#0284C7] border border-sky-100 rounded-2xl cursor-pointer" onClick={() => handleServiceClick(srv.id)}>
+                <div 
+                  className="p-3.5 bg-sky-50 text-[#0284C7] border border-sky-100 rounded-2xl cursor-pointer" 
+                  onClick={() => navigate(`/services/${srv.id}`)}
+                >
                   <Smartphone className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 
-                    onClick={() => handleServiceClick(srv.id)} 
+                    onClick={() => navigate(`/services/${srv.id}`)} 
                     className="text-2xl font-extrabold text-[#0A2540] hover:text-[#0284C7] cursor-pointer transition-colors"
                   >
                     {srv.title}
@@ -153,17 +148,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ openContactModal, on
               </div>
 
               <div className="space-y-2">
-                <button
-                  onClick={() => handleServiceClick(srv.id)}
+                <Link
+                  to={`/services/${srv.id}`}
                   className="w-full py-3 px-4 bg-[#0A2540] hover:bg-[#041627] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2"
                 >
                   <span>Explore {srv.title} Details</span>
                   <ArrowRight className="w-4 h-4 text-amber-400" />
-                </button>
+                </Link>
 
                 <button
                   onClick={() => openContactModal(srv.id)}
-                  className="w-full py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs border border-slate-200 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs border border-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Request Quote</span>
                 </button>
